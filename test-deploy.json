@@ -1,0 +1,16 @@
+{
+  "appName": "test-hello-world",
+  "files": [
+    {
+      "path": "package.json",
+      "content": "{\"name\":\"test-hello-world\",\"version\":\"1.0.0\",\"scripts\":{\"start\":\"node index.js\"},\"dependencies\":{\"express\":\"^4.18.2\"}}"
+    },
+    {
+      "path": "index.js",
+      "content": "const express = require('express');\nconst app = express();\n\napp.get('/', (req, res) => {\n  res.send('<h1>Hello from Render!</h1><p>Deployed via deployment worker 🚀</p>');\n});\n\nconst PORT = process.env.PORT || 3000;\napp.listen(PORT, () => {\n  console.log(`Server running on port ${PORT}`);\n});"
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  }
+}
