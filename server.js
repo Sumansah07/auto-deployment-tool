@@ -3,15 +3,14 @@
  * Handles backend deployments using GitHub + Render
  */
 
-require('dotenv').config();
-
-const express = require('express');
-const cors = require('cors');
-const { exec } = require('child_process');
-const { promisify } = require('util');
-const fs = require('fs').promises;
-const path = require('path');
-const { Octokit } = require('@octokit/rest');
+import 'dotenv/config';
+import express from 'express';
+import cors from 'cors';
+import { exec } from 'child_process';
+import { promisify } from 'util';
+import fs from 'fs/promises';
+import path from 'path';
+import { Octokit } from '@octokit/rest';
 
 const execAsync = promisify(exec);
 const app = express();
@@ -20,6 +19,19 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
+
+// Root endpoint
+app.get('/', (req, res) => {
+  res.json({ 
+    message: 'Deployment Worker API',
+    version: '1.0.0',
+    endpoints: {
+      health: 'GET /health',
+      deploy: 'POST /deploy'
+    },
+    docs: 'https://github.com/Sumansah07/deployment-worker'
+  });
+});
 
 // Health check
 app.get('/health', (req, res) => {
@@ -421,10 +433,15 @@ ${envVars || '  # No environment variables'}
 `.trim();
 }
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`🚀 Deployment Worker running on port ${PORT}`);
-  console.log(`📡 Health check: http://localhost:${PORT}/health`);
-  console.log(`🔧 Deploy endpoint: POST http://localhost:${PORT}/deploy`);
-  console.log(`📦 Using GitHub + Render deployment strategy`);
-});
+// Export for Vercel (serverless)
+export default app;
+
+// For local development only
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`🚀 Deployment Worker running on port ${PORT}`);
+    console.log(`📡 Health check: http://localhost:${PORT}/health`);
+    console.log(`🔧 Deploy endpoint: POST http://localhost:${PORT}/deploy`);
+    console.log(`📦 Using GitHub + Render deployment strategy`);
+  });
+}
