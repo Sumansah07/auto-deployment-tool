@@ -2,6 +2,7 @@
   "name": "deployment-worker",
   "version": "1.0.0",
   "description": "Deployment worker service for GitHub + Render deployments",
+  "type": "module",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
